@@ -3,7 +3,6 @@ import LoginImage from "../../assets/login-bg.svg";
 import { Button, Input, Form, message } from "antd";
 import { useState } from "react";
 import { saveToken } from "@token-service";
-import * as Yup from 'yup';
 import { Link, useNavigate } from "react-router-dom";
 import { Row, Col } from "antd";
 

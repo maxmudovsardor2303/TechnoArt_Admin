@@ -79,7 +79,6 @@
 
 // export default index
 
-import React from 'react'
 
 const Index = () => {
   return (
