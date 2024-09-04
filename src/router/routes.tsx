@@ -1,52 +1,30 @@
-import React from "react";
 import {
-    ProductOutlined,
     AppstoreOutlined,
-    SettingOutlined,
-    StockOutlined
-  } from '@ant-design/icons';
-
-interface Route{
-    path: string;
-    content: string;
-    icon: React.ReactElement;
-}
-
-export const routes: Route[] = [
+    TagsOutlined,
+    ShopOutlined,
+  } from "@ant-design/icons";
+  
+  const routes = [
     {
-        path: "products",
-        content: "Products",
-        icon: <ProductOutlined style={{fontSize: 20}} />
+      title: "Products",
+      path: "/main/products",
+      icon: <AppstoreOutlined />,
     },
     {
-        path: "categories",
-        content: "Categories",
-        icon: <AppstoreOutlined style={{fontSize: 20}} />
+      title: "Categories",
+      path: "/main/categories",
+      icon: <TagsOutlined />,
     },
     {
-        path: "brands",
-        content: "Brands",
-        icon: <AppstoreOutlined style={{fontSize: 18}} />
+      title: "Brands",
+      path: "/main/brands",
+      icon: <ShopOutlined />,
     },
     {
-        path: "brandcategories",
-        content: "BrandCategory",
-        icon: <AppstoreOutlined style={{fontSize: 18}} />
+      title: "Brand Category",
+      path: "/main/brand-category",
+      icon: <ShopOutlined />,
     },
-    {
-        path: "adds",
-        content: "Adds",
-        icon: <AppstoreOutlined style={{fontSize: 18}} />
-    },
-    {
-        path: "stock",
-        content: "Stock",
-        icon: <StockOutlined style={{fontSize: 18}} />
-    },
-    {
-        path: "settings",
-        content: "Settings",
-        icon: <SettingOutlined style={{fontSize: 18}} />
-    },
-    
-]
+  ];
+  
+  export default routes;
