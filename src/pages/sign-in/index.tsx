@@ -33,7 +33,7 @@ const Index = () => {
     <Row gutter={[16, 16]} align="middle" style={{ height: "100vh" }}>
       
             <Col span={12} >
-                <img src={LoginImage} alt="Registration" style={{ width: "100%", height: "70vh" }} />
+                <img src={LoginImage} alt="Registration" style={{ width: "100%", height: "70vh" , backgroundPosition: "center", backgroundSize: "cover" }} />
             </Col>
             <Col span={6} offset={3} style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
                 <h1>Login</h1>
