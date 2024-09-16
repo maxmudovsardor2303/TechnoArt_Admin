@@ -1,5 +1,3 @@
-import Table from "./global-table"
-
-
-
-export { Table}
+import Table from "./global-table";
+import Search from "./search";
+export { Table, Search,  };

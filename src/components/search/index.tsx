@@ -18,21 +18,25 @@ const Index = (props: SearchProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchValue = e.target.value;
 
-    // Update the state with the new search value
-    setParams((prev) => ({
+    setParams(prev => ({
       ...prev,
       search: newSearchValue,
     }));
 
-    // Modify the query parameters in the URL
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("search", newSearchValue); // Set new search query param
 
-    // Push the updated query parameters to the URL
     navigate(`?${searchParams.toString()}`);
   };
 
-  return <Input placeholder="Search" value={params.search} onChange={handleChange} />;
+  return (
+    <Input
+      placeholder="Search Category"
+      value={params.search}
+      onChange={handleChange}
+      style={{ width: "300px", position: "relative", bottom: "10px" }}
+    />
+  );
 };
 
 export default Index;

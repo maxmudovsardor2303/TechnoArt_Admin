@@ -1,20 +1,16 @@
 import https from "./config";
 import { Category } from "@types";
-
 const category: Category = {
-    get: params => {
-        const { search = "", limit, page } = params;
-
-        // URLni dinamik yaratish
-        const url = `https://texnoshop.ilyosbekdev.uz/category/search${search ? `=${search}` : ""}`;
-
-        return https.get(url, {
-            params: { limit, page },
-        });
-    },
-    create: function (): Promise<any> {
-        throw new Error("Function not implemented.");
-    }
+  get: params => {
+    const { search, limit, page } = params;
+    const url = `/category/search${search ? `?search=${search}` : ""}`;
+    return https.get(url, {
+      params: { limit, page },
+    });
+  },
+  create: data => https.post("/category/create", data),
+  update: (id, data) => https.patch(`/category/update/${id}`, data),
+  delete: id => https.delete(`/category/delete/${id}`),
+  get_subcategory: id => https.get(`/sub-category/search/${id}`, {}),
 };
-
 export default category;

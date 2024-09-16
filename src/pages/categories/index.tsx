@@ -1,24 +1,36 @@
-import { category } from "@service";
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { category } from "@service";
 import { Table, Search } from "@components";
-import { Modal, Button, Input,} from "antd"; // Ensure you're importing Modal and Button from Ant Design
+import { Button, Space, Tooltip } from "antd";
+import { EditOutlined, ArrowsAltOutlined } from "@ant-design/icons";
+import { CategoryCreate } from "@modals";
+import { CategoryUpdate } from "@modals";
+import { CategorDelete } from "@modals";
 
 const Index = () => {
   const [data, setData] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+  const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const val = new URLSearchParams(location.search);
   const [params, setParams] = useState({
-    search: "",
+    search: val.get("search") || "",
     page: 1,
     limit: 10,
   });
-  const [total, setTotal] = useState(0);
-  const [isModalVisible, setIsModalVisible] = useState(false); // State to manage modal visibility
 
   const getData = async () => {
     try {
       const response = await category.get(params);
       if (response.status === 200) {
         setData(response?.data?.data?.categories);
-        setTotal(response?.data?.data?.count); // Assuming the total count is provided by the API
+        setTotal(response?.data?.data?.count);
       }
     } catch (err: any) {
       console.log(err);
@@ -31,159 +43,103 @@ const Index = () => {
 
   const handleTableChange = (pagination: any) => {
     const { current = 1, pageSize = 10 } = pagination;
-
-    setParams((prev) => ({
+    setParams(prev => ({
       ...prev,
       page: current,
       limit: pageSize,
     }));
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", `${current}`);
+    searchParams.set("limit", `${pageSize}`);
+    navigate(`?${searchParams}`);
   };
 
-  const showModal = () => {
-    setIsModalVisible(true);
+  const handleEditClick = (id: string, name: string) => {
+    setSelectedCategory({ id, name });
+    setIsUpdateModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
+  const handleModalClose = () => {
+    setIsUpdateModalVisible(false);
+    setSelectedCategory(null);
   };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
+  const moveSingle = (id: number) => {
+    console.log(id);
+    navigate(`/main/categories/${id}`);
   };
+  const columns = [
+    {
+      title: "№",
+      dataIndex: "index",
+      key: "index",
+      align: "center",
+      render: (_text: string, _record: any, index: number) =>
+        `${(params.page - 1) * params.limit + index + 1}`,
+    },
+    { title: "Name", dataIndex: "name", key: "name", align: "center" },
+    {
+      title: "Actions",
+      key: "actions",
+      align: "center",
+      render: (_text: string, record: any) => (
+        <Space size={"middle"}>
+          <Tooltip title="Edit">
+            <Button
+              type="default"
+              icon={<EditOutlined />}
+              onClick={() => handleEditClick(record.id, record.name)}
+            />
+          </Tooltip>
+          <Tooltip title="Delete">
+            <CategorDelete
+              record={{ id: record.id, name: record.name }}
+              onSuccess={getData}
+            />
+          </Tooltip>
+          <Tooltip title="View">
+            <Button
+              type="default"
+              icon={<ArrowsAltOutlined />}
+              onClick={() => moveSingle(record.id)}
+            />
+          </Tooltip>
+        </Space>
+      ),
+    },
+  ];
 
   return (
     <div>
-        <div className="display-flex, justify-end">
-        <Search params={params} setParams={setParams} />
-      <Button  onClick={showModal} style={{background: '#d55200', color: 'white'}}>
-        Add New Categories
-      </Button>
-        </div>
-      <Modal
-        title="Add new category" 
-        visible={isModalVisible} 
-        onOk={handleOk}
-        onCancel={handleCancel} 
-      >
-        <p>Category name</p>
-        <Input type="text" 
-        style={{ paddingTop: '12px', paddingBottom: '12px',  }}/>
-
-
-      </Modal>
+      <Search params={params} setParams={setParams} />
+      <CategoryCreate onSuccess={getData} />
       <Table
         data={data}
+        columns={columns}
         pagination={{
           current: params.page,
           pageSize: params.limit,
           total: total,
           showSizeChanger: true,
-          pageSizeOptions: ["2", "5", "8"],
+          pageSizeOptions: ["2", "5", "7", "10"],
         }}
         onChange={handleTableChange}
       />
+
+      {/* Kategoriya yangilash modal */}
+      {selectedCategory && (
+        <CategoryUpdate
+          visible={isUpdateModalVisible}
+          onClose={handleModalClose}
+          onSuccess={() => {
+            getData();
+            handleModalClose();
+          }}
+          categoryId={selectedCategory.id}
+          initialName={selectedCategory.name}
+        />
+      )}
     </div>
   );
 };
 
 export default Index;
-
-
-
-
-// import { useLocation, useNavigate } from "react-router-dom"; // To manage query params
-// import { useEffect, useState } from "react";
-// import { category } from "@service";
-// import { Table, Search } from "@components";
-
-// // Helper function to extract query parameters from URL
-// const getQueryParams = (search: string) => {
-//   const params = new URLSearchParams(search);
-//   const page = params.get("page");
-//   const limit = params.get("limit");
-//   const searchValue = params.get("search");
-
-//   return {
-//     search: searchValue || "",
-//     page: page ? parseInt(page) : 1,
-//     limit: limit ? parseInt(limit) : 10,
-//   };
-// };
-
-// const Index = () => {
-//   const location = useLocation();
-//   const navigate = useNavigate();
-  
-//   // Initialize state with query params
-//   const [params, setParams] = useState(getQueryParams(location.search));
-//   const [data, setData] = useState([]);
-//   const [total, setTotal] = useState(0); // To store the total number of items
-  
-//   // Fetch data when params change
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const response = await category.get(params);
-//         if (response.status === 200) {
-//           setData(response?.data?.data?.categories);
-//           setTotal(response?.data?.data?.count); // Assuming the total count is provided by the API
-//         }
-//       } catch (err) {
-//         console.log(err);
-//       }
-//     };
-//     fetchData();
-//   }, [params]);
-
-//   // Sync state with query parameters whenever the URL changes
-//   useEffect(() => {
-//     const queryParams = getQueryParams(location.search);
-//     setParams((prevParams) => ({
-//       ...prevParams,
-//       ...queryParams,
-//     }));
-//   }, [location.search]);
-
-//   // Handle pagination changes and update the URL with new query parameters
-//   const handleTableChange = (pagination: any) => {
-//     const { current = 1, pageSize = 10 } = pagination;
-
-//     // Update pagination parameters in state
-//     setParams((prev) => ({
-//       ...prev,
-//       page: current,
-//       limit: pageSize,
-//     }));
-
-//     // Update query params in URL
-//     const searchParams = new URLSearchParams(location.search);
-//     searchParams.set("page", current.toString());
-//     searchParams.set("limit", pageSize.toString());
-//     navigate(`?${searchParams.toString()}`);
-//   };
-
-//   const columns = [
-//     { title: 'Name', dataIndex: 'name', key: 'name' },
-//   ];
-
-//   return (
-//     <div>
-//       <h1>Categories</h1>
-//       <Search params={params} setParams={setParams} />
-//       <Table
-//         data={data}
-//         columns={columns}
-//         pagination={{
-//           current: params.page,
-//           pageSize: params.limit,
-//           total: total,
-//           showSizeChanger: true,
-//           pageSizeOptions: ['2', '5', '7', '10'],
-//         }}
-//         onChange={handleTableChange}
-//       />
-//     </div>
-//   );
-// };
-
-// export default Index;
