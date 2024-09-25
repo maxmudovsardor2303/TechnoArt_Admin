@@ -39,3 +39,11 @@ export interface Brand {
   update: (id: string | number, data: any) => Promise<any>;
   delete: (id: string | number) => Promise<any>;
 }
+
+// ==========  BRAND-CATEGORY =======
+export interface BrandCategory {
+  get : (params: IParams) => any;
+  create: (name: any | number) => Promise<any>;
+  update: (id: string | number, data: any) => Promise<any>;
+  delete: (id: string | number) => Promise<any>;
+}
