@@ -15,6 +15,19 @@ export interface Auth {
   sign_in: (data: SignIn) => any;
 }
 
+// ==========  Sign-Up =======
+ interface SignUp{
+  first_name: string
+  last_name: string
+  phone_number: string | number 
+  email: string | number 
+  password: string | number 
+
+}
+export interface Auth {
+  sign_up: (data: SignUp) => any;
+}
+
 // ==========  CATEGORY =======
 export interface Category {
   get: (params: IParams) => any;
@@ -42,6 +55,15 @@ export interface Brand {
 
 // ==========  BRAND-CATEGORY =======
 export interface BrandCategory {
+  get : (params: IParams) => any;
+  create: (name: any | number) => Promise<any>;
+  update: (id: string | number, data: any) => Promise<any>;
+  delete: (id: string | number) => Promise<any>;
+}
+
+// ==========  Adds =======
+
+export interface Adds {
   get : (params: IParams) => any;
   create: (name: any | number) => Promise<any>;
   update: (id: string | number, data: any) => Promise<any>;

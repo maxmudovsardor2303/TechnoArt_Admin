@@ -25,6 +25,11 @@ import {
       path: "/main/brand-category",
       icon: <ShopOutlined />,
     },
+    {
+      title: "Adds",
+      path: "/main/adds",
+      icon: <ShopOutlined />,
+    },
   ];
   
   export default routes;
